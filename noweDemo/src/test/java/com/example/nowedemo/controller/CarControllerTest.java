@@ -48,28 +48,50 @@ class CarControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
-    @Test
+    /*@Test
     @DisplayName("HTTP POST /cars -> 405 MNA")
     void listCarsPOST_returns405() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/cars").accept(MediaType.APPLICATION_JSON)
                 ).andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
-    }
+    }*/
 
     @Test
     @DisplayName("HTTP /cars -> 200 OK; 4 cars")
     void listCars_returns4Cars() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
-                        MockMvcRequestBuilders.get("/cars").accept(MediaType.APPLICATION_JSON)
+                        MockMvcRequestBuilders.get("/cars")
                 ).andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andReturn();
 
         String json = mvcResult.getResponse().getContentAsString();
 
-        List<Car> cars = objectMapper.readValue(json, new TypeReference<>() {});
+        List<Car> cars = objectMapper.readValue(json, new TypeReference<>() {
+        });
 
         Assertions.assertEquals(4, cars.size());
+    }
+
+    @Test
+    @DisplayName("HTTP POST /cars -> 200 OK")
+    void addCar_returnCar() throws Exception {
+
+        Car testCar = new Car("TestModel", "TestMarka");
+
+        MvcResult mvcResult = mockMvc.perform(
+                        MockMvcRequestBuilders.post("/cars").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(testCar))
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn();
+
+        String json = mvcResult.getResponse().getContentAsString();
+        Car car = objectMapper.readValue(json, Car.class);
+
+        Assertions.assertNotNull(car);
+        Assertions.assertEquals("TestModel", car.getModel());
+        Assertions.assertEquals("TestMarka", car.getMarka());
     }
 }

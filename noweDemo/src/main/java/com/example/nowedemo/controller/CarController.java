@@ -18,7 +18,7 @@ public class CarController {
         this.carService = carService;
     }
 
-    @PostMapping("/cars")
+    @PostMapping(value = "/cars", consumes = "application/json")
     public Car addCar(@RequestBody Car car){
         return carService.addCar(car);
     }
