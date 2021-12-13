@@ -2,17 +2,14 @@ package com.example.nowedemo.controller;
 
 import com.example.nowedemo.model.Car;
 import com.example.nowedemo.service.CarService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class CarController {
 
-    private CarService carService;
+    private final CarService carService;
 
     public CarController(CarService carService) {
         this.carService = carService;
@@ -26,5 +23,10 @@ public class CarController {
     @GetMapping("/cars")
     public List<Car> listCars(){
         return carService.listAll();
+    }
+
+    @DeleteMapping("/cars/{id}")
+    public void deleteCar(@PathVariable long id) {
+        carService.delete(id);
     }
 }

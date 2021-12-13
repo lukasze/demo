@@ -1,6 +1,7 @@
 package com.example.nowedemo.controller;
 
 import com.example.nowedemo.model.Car;
+import com.example.nowedemo.repository.CarRepository;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -30,8 +32,11 @@ class CarControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    CarRepository carRepository;
+
     @Test
-    @DisplayName("HTTP /cars -> 200 OK")
+    @DisplayName("HTTP GET /cars -> 200 OK")
     void listCars() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/cars").accept(MediaType.APPLICATION_JSON)
@@ -40,7 +45,7 @@ class CarControllerTest {
     }
 
     @Test
-    @DisplayName("HTTP /car -> 404 OK")
+    @DisplayName("HTTP GET /car -> 404 OK")
     void listCar_returns404() throws Exception {
         mockMvc.perform(
                         MockMvcRequestBuilders.get("/car").accept(MediaType.APPLICATION_JSON)
@@ -58,7 +63,7 @@ class CarControllerTest {
     }*/
 
     @Test
-    @DisplayName("HTTP /cars -> 200 OK; 4 cars")
+    @DisplayName("HTTP GET /cars -> 200 OK; 4 cars")
     void listCars_returns4Cars() throws Exception {
         MvcResult mvcResult = mockMvc.perform(
                         MockMvcRequestBuilders.get("/cars")
@@ -76,6 +81,7 @@ class CarControllerTest {
 
     @Test
     @DisplayName("HTTP POST /cars -> 200 OK")
+    @DirtiesContext
     void addCar_returnCar() throws Exception {
 
         Car testCar = new Car("TestModel", "TestMarka");
@@ -93,5 +99,19 @@ class CarControllerTest {
         Assertions.assertNotNull(car);
         Assertions.assertEquals("TestModel", car.getModel());
         Assertions.assertEquals("TestMarka", car.getMarka());
+    }
+
+    @Test
+    @DisplayName("HTTP DELETE /cars -> 200 OK")
+    @DirtiesContext
+    void deleteCar() throws Exception {
+
+        mockMvc.perform(
+                        MockMvcRequestBuilders.delete("/cars/1")
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isOk());
+
+        Assertions.assertEquals(3, carRepository.count());
     }
 }
