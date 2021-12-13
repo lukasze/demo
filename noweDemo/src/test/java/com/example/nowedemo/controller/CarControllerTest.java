@@ -102,6 +102,18 @@ class CarControllerTest {
     }
 
     @Test
+    @DisplayName("HTTP POST /cars -> Status 400 ")
+    void addCar_AnyString() throws Exception {
+
+        MvcResult mvcResult = mockMvc.perform(
+                        MockMvcRequestBuilders.post("/cars").contentType(MediaType.APPLICATION_JSON).content("{asdfasdf}")
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andReturn();
+    }
+
+    @Test
     @DisplayName("HTTP DELETE /cars -> 200 OK")
     @DirtiesContext
     void deleteCar() throws Exception {
