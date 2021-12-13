@@ -11,7 +11,7 @@ public class DemoApplication {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext ctx = SpringApplication.run(DemoApplication.class, args);
-		Arrays.stream(ctx.getBeanDefinitionNames()).forEach(System.out::println);
+//		Arrays.stream(ctx.getBeanDefinitionNames()).forEach(System.out::println);
 	}
 
 }
