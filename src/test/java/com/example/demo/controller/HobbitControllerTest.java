@@ -31,7 +31,7 @@ class HobbitControllerTest {
 
     @Test
     @DisplayName("HTTP GET /hobbits -> HTTP 200")
-    void hobbitsShouldReturn200() throws Exception {
+    void hobbitsGET_ShouldReturn200() throws Exception {
         mockMvc
                 .perform(
                         MockMvcRequestBuilders
@@ -40,6 +40,20 @@ class HobbitControllerTest {
                 )
                 .andDo(print())
                 .andExpect(MockMvcResultMatchers.status().isOk());
+
+    }
+
+    @Test
+    @DisplayName("HTTP POST /hobbits -> HTTP 405")
+    void hobbitsPOST_ShouldReturn405() throws Exception {
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders
+                                .post("/hobbits")
+                                .accept(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(MockMvcResultMatchers.status().isMethodNotAllowed());
 
     }
 
