@@ -126,4 +126,25 @@ class CarControllerTest {
 
         Assertions.assertEquals(3, carRepository.count());
     }
+
+    @Test
+    @DisplayName("HTTP POST /cars -> update -> 200 OK")
+    @DirtiesContext
+    void updateCar() throws Exception {
+
+        Car testCar = new Car(1L, "ModelUpdateTest", "MarkaUpdateTest");
+
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/cars").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(testCar)))
+                .andDo(print()).andExpect(MockMvcResultMatchers.status().isOk()).andReturn();
+
+        String json = mvcResult.getResponse().getContentAsString();
+        Car car = objectMapper.readValue(json, Car.class);
+
+        assertAll("TEST HEADING",
+                () -> assertEquals(2L, car.getId()),
+                () -> assertEquals("ModelUpdateTes2t", car.getModel()),
+                () -> assertEquals("MarkaUpdateTest", car.getMarka())
+        );
+
+    }
 }
